@@ -4,31 +4,9 @@
   "private": true,
   "type": "module",
   "workspaces": ["packages/*"],
-  "description": "A small 2D-first game engine starter with an orthographic low-poly 3D layer and Z# scripting stub.",
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "build:web": "npm run build",
-    "build:desktop": "npm run build && electron-builder",
-    "preview": "vite preview",
-    "test": "vitest run",
-    "test:watch": "vitest"
-  },
-  "build": {
-    "appId": "dev.zsharp.engine",
-    "productName": "ZSharp Engine",
-    "files": ["dist/**", "desktop/**", "package.json"],
-    "directories": { "output": "release" },
-    "win": { "target": "nsis" },
-    "mac": { "target": "dmg" },
-    "linux": { "target": "AppImage" }
-  },
-  "devDependencies": {
-    "@types/node": "^22.10.2",
-    "electron": "^33.2.1",
-    "electron-builder": "^25.1.8",
-    "typescript": "~5.7.2",
-    "vite": "^6.0.5",
-    "vitest": "^2.1.8"
-  }
+  "description": "A 2D-first game engine starter with an orthographic low-poly 3D layer and Z# scripting stub.",
+  "scripts": { "dev": "vite", "build": "tsc -b && vite build", "build:web": "npm run build", "build:desktop": "npm run build && electron-builder", "preview": "vite preview", "test": "vitest run", "test:watch": "vitest" },
+  "build": { "appId": "dev.zsharp.engine", "productName": "ZSharp Engine", "files": ["dist/**", "desktop/**", "package.json"], "directories": { "output": "release" }, "win": { "target": "nsis" }, "mac": { "target": "dmg" }, "linux": { "target": "AppImage" } },
+  "dependencies": { "planck": "^1.4.2" },
+  "devDependencies": { "@types/node": "^22.10.2", "electron": "^33.2.1", "electron-builder": "^25.1.8", "typescript": "~5.7.2", "vite": "^6.0.5", "vitest": "^2.1.8" }
 }

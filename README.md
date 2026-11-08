@@ -1,6 +1,6 @@
 # ZSharp Game Engine
 
-The project includes a workspace split into `packages/core` and `packages/gameplay-sample`, while the existing Vite editor remains at the repository root during migration. The core provides a deterministic fixed-step scene simulation, simple 2D AABB physics and solid tilemap cells, built-in scene JSON save/load, and animation states. The sample package contains a playable-scene factory and UI-independent coin/enemy win/lose rules.
+The engine uses Planck.js as a Box2D-compatible 2D physics backend for broadphase collision detection and rigid-body solving. It supports box, circle, and convex polygon colliders, sensor triggers, fixed-step simulation, and bullet flags for CCD. Tilemap solid cells are emitted as static fixtures.
 
 ```sh
 npm install
@@ -9,4 +9,4 @@ npm test
 npm run build:web
 ```
 
-Advance simulations through `Scene.simulateFixedStep(1 / 60)`. Physics is a compact educational solver, not production-grade; it does not provide CCD, rotated colliders, spatial broadphase, robust stacking, or cross-platform bitwise determinism. Use a mature Box2D-compatible implementation for production physics. Scene persistence covers built-in components; custom components and editor UI save/load wiring are not automatic.
+Physics integration is not yet production-certified: run the test suite and add stress/regression tests for the target browsers, tune CCD and body iteration settings, test tilemap rebuilds after edits, and validate scene serialization of all physics settings. Cross-platform bitwise determinism is not promised. `docs/PHYSICS.md` explains scope and known integration gaps.

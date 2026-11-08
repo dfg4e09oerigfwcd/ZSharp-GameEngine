@@ -1,7 +1,15 @@
-# Runtime and editor notes
+# Engine package layout and deterministic gameplay
 
-Scene collision now supports AABB contacts, opted-in solid tile ids, contact enter/exit callbacks, simple distance constraints, and fixed-step integration. This is still a compact educational/demo solver—not production-grade physics: it lacks continuous collision detection, robust stacking, broadphase acceleration, full joint types, and extensive numerical stability testing. Use a mature Box2D/Planck backend for shipped physics-heavy titles.
+The workspace now exposes `@zsharp/core` and `@zsharp/gameplay-sample` packages under `packages/`. The core package facade exports the scene graph, component primitives, physics, and versioned scene persistence; the sample package exports the sample world and testable game rules. Existing Vite editor imports remain under `src/` during this migration so the editor can be moved without breaking its current entry point.
 
-Scene persistence uses versioned JSON through `serializeScene` / `deserializeScene`, supports engine-owned components and asset keys, and deliberately rejects unknown custom components. `UndoHistory` provides bounded command-based undo/redo for editor integrations.
+## Simulation contract
 
-Named animation clips are supported by `AnimationController`; clips reference sprite-atlas source rectangles. Tilemap solid ids are passed to `Tilemap` and used by the scene solver.
+Advance simulation only with `Scene.simulateFixedStep(1 / 60)`. The scene updates components in insertion order, integrates bodies, resolves AABB contacts and opted-in solid tile cells in stable object order, solves simple distance constraints, then dispatches contact transitions. `Scene.tick` counts completed fixed steps. Replaying the same initial state and inputs at the same fixed-step sequence is deterministic within the same JS runtime; cross-platform floating-point bitwise determinism is not promised.
+
+The 2D solver is improved for small demos with inverse-mass positional correction, restitution impulses, basic friction, tile-cell collision, and enter/exit events. It remains intentionally simple: no CCD, rotated shapes, optimized broadphase, robust stack/joint solver, or production workload qualification. Use Box2D/Planck or another mature engine for production physics-heavy titles.
+
+## Save/load
+
+`serializeScene` and `deserializeScene` support built-in components and stable object references in versioned JSON. `saveSceneToStorage` and `loadSceneFromStorage` allow browser storage or injected storage adapters for tests. Custom runtime components and functions are intentionally not serialized; store their authored configuration in a registered component schema before shipping.
+
+The gameplay sample's `DemoGameRules` can be exercised without DOM: collect three `Coin N` objects to win, or touch `Enemy` to lose. Run `npm test` for deterministic-step, tile collision, serialization/storage, animation-state and win/lose tests.

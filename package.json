@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "workspaces": ["packages/*"],
   "description": "A small 2D-first game engine starter with an orthographic low-poly 3D layer and Z# scripting stub.",
   "scripts": {
     "dev": "vite",

@@ -1,8 +1,6 @@
 # ZSharp Game Engine
 
-The engine starter now includes 2D tilemap collision cells, named sprite-atlas animation clips, contact enter/exit callbacks, a lightweight distance constraint, versioned scene JSON persistence, and a bounded undo/redo command history. The demo scene includes a player, collectible and enemy placeholders.
-
-## Run
+The project includes a workspace split into `packages/core` and `packages/gameplay-sample`, while the existing Vite editor remains at the repository root during migration. The core provides a deterministic fixed-step scene simulation, simple 2D AABB physics and solid tilemap cells, built-in scene JSON save/load, and animation states. The sample package contains a playable-scene factory and UI-independent coin/enemy win/lose rules.
 
 ```sh
 npm install
@@ -11,4 +9,4 @@ npm test
 npm run build:web
 ```
 
-Physics remains a minimal AABB educational solver and must not be described as production-grade: no CCD, robust stacking, optimized broadphase, full joint family, or platform-scale stress suite. For production physics, integrate a mature Box2D-compatible backend and validate it with determinism/performance tests. Scene serialization supports known built-in components; asset keys are stored, but app-specific asset resolver and editor file controls must be wired by the host. The editor history utility is provided for command integration; not every UI action is yet undoable. The interactive demo still needs UI wiring for win/lose and collectible score feedback.
+Advance simulations through `Scene.simulateFixedStep(1 / 60)`. Physics is a compact educational solver, not production-grade; it does not provide CCD, rotated colliders, spatial broadphase, robust stacking, or cross-platform bitwise determinism. Use a mature Box2D-compatible implementation for production physics. Scene persistence covers built-in components; custom components and editor UI save/load wiring are not automatic.

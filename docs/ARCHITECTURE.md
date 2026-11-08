@@ -1,11 +1,9 @@
-# Starter architecture
+# Runtime and editor notes
 
-`src/engine/` holds reusable engine primitives. `Scene` owns `GameObject`s; each object owns a `Transform` and a list of `Component`s. `GameEngine` drives updates and forwards input, and `CanvasRenderer` draws 2D components and orthographic mesh faces. `src/sample/createSampleScene.ts` assembles an example using only those APIs. `src/main.ts` is the editor shell and UI wiring.
+`AssetManager` promise-caches image and decoded audio requests; `AudioManager` plays decoded buffers or synthesized demo tones. Images are attached to `Sprite` components, with `sourceRect` used for atlas animation.
 
-## Extension seams
+`Scene` owns object/component lifetimes and exposes a fixed-step `stepPhysics` method. Dynamic `RigidBody2D` instances integrate gravity and velocity; colliders on objects without a dynamic body are immovable. AABB resolution uses inverse mass distribution, restitution and basic tangential friction. Trigger colliders report overlap without resolving it.
 
-- Implement asset loading/cache and project serialization around the `Sprite` image field and editor asset list.
-- Replace AABB notifications in `Scene.detectOverlaps` with a proper broad/narrow-phase physics system.
-- Replace `CanvasRenderer.drawMesh` with WebGL/WebGPU when scale warrants it.
-- Expand the explicit Z# parser in `ZSharpRuntime`; keep the language sandboxed and add tests for each grammar feature.
-- Add scene selection, drag handles, undo/redo, and persistence to the editor shell.
+The editor runs the scene loop continuously. Editor pointer events map the canvas through its 2D camera to world coordinates, select sprite bounds, and update selected transforms while dragging. The play button enables keyboard control and jumping for the sample character.
+
+Z# is a deliberately constrained interpreter. Its numeric expression parser implements unary signs, parentheses, multiplication/division and addition/subtraction. `if <expr> <comparison> <expr>` blocks end with `end`. Explicit commands are the only host bridge; arbitrary code evaluation is not supported.

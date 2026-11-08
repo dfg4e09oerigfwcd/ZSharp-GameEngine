@@ -22,7 +22,17 @@ export class Camera2D extends Component {
 }
 
 export class Collider extends Component {
-  constructor(public width: number, public height: number, public onOverlap?: (other: GameObject) => void) { super(); }
+  constructor(public width: number, public height: number, public onOverlap?: (other: GameObject) => void, public isTrigger = false) { super(); }
+}
+
+/** Dynamic 2D body. Objects without a body are treated as immovable colliders. */
+export class RigidBody2D extends Component {
+  readonly velocity = new Vec2();
+  gravityScale = 1;
+  mass = 1;
+  restitution = 0;
+  friction = 0.82;
+  constructor(public isStatic = false) { super(); }
 }
 
 export class Animator extends Component {
@@ -30,6 +40,7 @@ export class Animator extends Component {
   frame = 0;
   constructor(public frameWidth: number, public frameHeight: number, public frameCount: number, public framesPerSecond = 8, public loop = true) { super(); }
   override onUpdate(deltaSeconds: number): void {
+    if (this.frameCount < 1) return;
     this.elapsed += deltaSeconds;
     const frameDuration = 1 / Math.max(0.01, this.framesPerSecond);
     while (this.elapsed >= frameDuration) {
@@ -45,9 +56,7 @@ export interface Face { a: number; b: number; c: number; color?: string }
 export class Mesh3D extends Component {
   constructor(public vertices: Vec3[], public faces: Face[], public color = '#69d2e7', public orthographicScale = 1) { super(); }
 }
-
 export class DirectionalLight extends Component {
   constructor(public direction = new Vec3(-0.4, -0.8, -0.6), public intensity = 0.8) { super(); }
 }
-
 export function componentPosition2D(object: GameObject): Vec2 { return new Vec2(object.transform.position.x, object.transform.position.y); }

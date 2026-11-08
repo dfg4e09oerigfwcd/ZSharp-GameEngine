@@ -1,12 +1,10 @@
 # ZSharp Game Engine
 
-A small, extensible 2D-first game-engine starter with a lightweight orthographic 3D renderer, a safe Z# command interpreter stub, and a browser-based editor shell. It is intentionally a foundation rather than a finished commercial engine.
-
-## Requirements
-
-- Node.js 20 or newer and npm
+A small 2D-first game-engine starter with a lightweight orthographic 3D renderer, browser editor, and safe Z# interpreter. It is an MVP foundation, not a finished production engine.
 
 ## Run and build
+
+Requires Node.js 20+.
 
 ```sh
 npm install
@@ -16,32 +14,30 @@ npm run build:web
 npm run build:desktop
 ```
 
-The web build is written to `dist/`. `build:desktop` packages the same editor shell with Electron for Windows, macOS, or Linux; run it on the target platform to produce its installer. To open the desktop shell during development, use `npx electron desktop/main.cjs` after `npm run dev` in another terminal (the current desktop entry loads the packaged `dist/` build).
+Open the editor and click **Play demo**. Move with A/D or arrow keys, jump with Space, and use the Z# console. In editor mode click a sprite to select and drag it in the viewport. The sample player sprite atlas is loaded from `public/assets/player.svg`; failed image requests report an error and sprites retain their color fallback.
 
-## Included foundation
+## What is included
 
-- Core: fixed-step-capable requestAnimationFrame loop, scene/object/component model, transforms, keyboard input, and delta-time updates.
-- 2D: canvas sprites, tilemaps, camera zoom/follow, AABB collision callbacks, and sprite-sheet animation.
-- Small 3D: colored triangle meshes, orthographic projection, depth sorting, and directional face lighting, rendered alongside the 2D scene.
-- Z#: deliberately limited interpreter for `print`, `move`, and `set` statements. It parses a small safe command set and does not execute JavaScript or arbitrary code.
-- Editor: scene viewport, object hierarchy, asset list, inspector, play/pause, and a Z# console panel.
-- Export: Vite static web build and Electron desktop packaging.
-- Example: a 2D player/sprite/tilemap scene with an orbiting low-poly 3D prism. `src/sample/` is the project starting point.
+- **Core:** scene graph, transforms/components, frame loop, keyboard input, fixed-step physics update.
+- **2D:** cached image asset pipeline, atlas animation, tilemap rendering, camera follow/zoom, AABB rigid bodies with gravity, collision resolution, restitution/friction settings, and triggers.
+- **3D:** low-poly triangle meshes, orthographic projection and simple directional face lighting on Canvas 2D.
+- **Audio/resources:** promise-cached image/audio loading, preload progress callbacks, WebAudio playback and generated tone effects.
+- **Editor:** scene hierarchy, transform inspector, click selection, drag transforms, add-object and play/reset controls.
+- **Z#:** safe line-oriented language subset: number variables, arithmetic/precedence/parentheses, comparisons/`if` blocks, `print`, `move`, `set`, `spawn` and `destroy`. It never uses `eval` or executes source as JavaScript.
+- **Export:** Vite static web build and Electron desktop packaging.
 
-## Engine API sketch
-
-Create a `Scene`, add `GameObject`s, and attach components with `object.addComponent(new Sprite(...))`. `GameEngine` owns the animation loop and `CanvasRenderer` draws the active scene. The sample scene in `src/sample/createSampleScene.ts` is the best executable reference.
-
-## Z# starter syntax
+## Z# example
 
 ```text
-print("Hello from Z#")
-move("Player", 1, 0)
-set("Player.x", 4)
+let step = 2 + 3 * 2
+if step >= 8
+  print("moving")
+  move("Player", step, 0)
+end
 ```
 
-Z# currently supports only those commands; diagnostics report invalid statements instead of evaluating untrusted source. Extend the parser deliberately as the language design matures.
+The language is intentionally constrained: one-line statements and `if`/`end` blocks, numeric variables, and whitelisted scene commands. Loops, functions, persistence, and a formal compiler are future work.
 
-## Known limits / next steps
+## Current limitations
 
-This MVP has no GPU renderer, imported asset pipeline, audio backend, rigid-body solver, 3D camera controls, or platform-native packaging verification. Collisions are overlap notifications only. The inspector edits basic transform values; persistence and undo/redo are natural next steps.
+Physics is a simple AABB solver for small demos, not a continuous or production-grade rigid-body engine; tilemap collision shapes, joints, and contact enter/exit events are not implemented. Audio uses browser WebAudio and requires user interaction to unlock playback. Asset URLs are loaded directly from the web app and project import/serialization is not yet available. The editor does not yet include undo/redo or scene save/load. 3D rendering is deliberately small and CPU-based.
